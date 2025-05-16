@@ -1,0 +1,200 @@
+class CartaYuGiOh:
+    ATRIBUTOS_VALIDOS = ['ÁGUA', 'FOGO', 'LUZ',
+                         'TERRA', 'TREVAS', 'VENTO', 'DIVINO']
+    TIPOS_VALIDOS = [
+        'AQUA', 'BESTA', 'BESTA ALADA', 'BESTA DIVINA', 'BESTA GUERREIRA',
+        'CIBERSE', 'DEMÔNIO', 'DEUS CRIADOR', 'DRAGÃO', 'FADA', 'GUERREIRO',
+        'INSETO', 'MAGO', 'MÁQUINA', 'PEIXE', 'PLANTA', 'PSÍQUICO', 'PIRO',
+        'ROCHA', 'RÉPTIL', 'SERPENTE MARINHA', 'TROVÃO', 'WYRM', 'ZUMBI'
+    ]
+
+    def __init__(self, nome, nivel, atributo, tipo, ataque, defesa, efeito=None):
+        self.nome = nome
+        self.nivel = self._validar_nivel(nivel)
+        self.atributo = self._validar_atributo(atributo)
+        self.tipo = self._validar_tipo(tipo)
+        self.ataque = ataque
+        self.defesa = defesa
+        self.efeito = efeito
+
+    def _validar_nivel(self, nivel):
+        if not isinstance(nivel, int) or nivel < 1 or nivel > 12:
+            raise ValueError("Nível deve ser um inteiro entre 1 e 12")
+        return nivel
+
+    def _validar_atributo(self, atributo):
+        atributo_upper = atributo.upper()
+        if atributo_upper not in self.ATRIBUTOS_VALIDOS:
+            raise ValueError(
+                f"Atributo inválido. Deve ser um dos: {', '.join(self.ATRIBUTOS_VALIDOS)}")
+        return atributo_upper
+
+    def _validar_tipo(self, tipo):
+        tipo_upper = tipo.upper()
+        if tipo_upper not in self.TIPOS_VALIDOS:
+            raise ValueError(
+                f"Tipo inválido. Deve ser um dos: {', '.join(self.TIPOS_VALIDOS)}")
+        return tipo_upper
+
+    def __str__(self):
+        estrelas = '★' * self.nivel
+        info = f"\n=== {self.nome} ===\n"
+        info += f"Nível: {estrelas}\n"
+        info += f"Atributo: {self.atributo}\n"
+        info += f"Tipo: {self.tipo}\n"
+        info += f"ATK: {self.ataque} / DEF: {self.defesa}\n"
+        if self.efeito:
+            info += f"\n[Efeito]\n{self.efeito}\n"
+        info += "=" * 30
+        return info
+
+
+def criar_carta_interativamente():
+    print("\n" + "="*50)
+    print("🃏 CRIADOR DE CARTAS DE YU-GI-OH! 🃏")
+    print("="*50 + "\n")
+
+    # Nome da Carta
+    nome = input("Digite o nome da carta: ").strip()
+    while not nome:
+        print("O nome da carta não pode estar vazio!")
+        nome = input("Digite o nome da carta: ").strip()
+
+    # Nível da Carta
+    while True:
+        try:
+            nivel = int(input("Digite o nível da carta (1-12): "))
+            if 1 <= nivel <= 12:
+                break
+            print("O nível deve ser entre 1 e 12!")
+        except ValueError:
+            print("Por favor, digite um número válido!")
+
+    # Atributo da Carta
+    print("\nAtributos disponíveis:")
+    for i, atributo in enumerate(CartaYuGiOh.ATRIBUTOS_VALIDOS, 1):
+        print(f"{i}. {atributo}")
+
+    while True:
+        try:
+            escolha = int(input("Escolha o número do atributo: "))
+            if 1 <= escolha <= len(CartaYuGiOh.ATRIBUTOS_VALIDOS):
+                atributo = CartaYuGiOh.ATRIBUTOS_VALIDOS[escolha-1]
+                break
+            print("Escolha inválida!")
+        except ValueError:
+            print("Por favor, digite um número válido!")
+
+    # Tipo da Carta
+    print("\nTipos disponíveis:")
+    for i, tipo in enumerate(CartaYuGiOh.TIPOS_VALIDOS, 1):
+        print(f"{i}. {tipo}")
+
+    while True:
+        try:
+            escolha = int(input("Escolha o número do tipo: "))
+            if 1 <= escolha <= len(CartaYuGiOh.TIPOS_VALIDOS):
+                tipo = CartaYuGiOh.TIPOS_VALIDOS[escolha-1]
+                break
+            print("Escolha inválida!")
+        except ValueError:
+            print("Por favor, digite um número válido!")
+
+    # Pontos de Ataque e Defesa
+    while True:
+        try:
+            ataque = int(input("Digite os pontos de ataque (ATK): "))
+            defesa = int(input("Digite os pontos de defesa (DEF): "))
+            break
+        except ValueError:
+            print("Por favor, digite números válidos para ATK e DEF!")
+
+    # Efeito da Carta
+    efeito = input(
+        "Digite o efeito da carta (ou deixe em branco se não tiver): ").strip()
+
+    # Criar a carta
+    try:
+        nova_carta = CartaYuGiOh(
+            nome=nome,
+            nivel=nivel,
+            atributo=atributo,
+            tipo=tipo,
+            ataque=ataque,
+            defesa=defesa,
+            efeito=efeito if efeito else None
+        )
+        print("\n" + "="*50)
+        print("🎉 CARTA CRIADA COM SUCESSO! 🎉")
+        print(nova_carta)
+        return nova_carta
+    except Exception as e:
+        print(f"\n❌ Erro ao criar a carta: {e}")
+        return None
+
+
+class CampoBatalha:
+    def __init__(self):
+        self.cartas = []
+
+    def adicionar_carta(self, carta):
+        self.cartas.append(carta)
+        print(f"\n{carta.nome} foi adicionada ao campo de batalha!")
+
+    def mostrar_campo(self):
+        if not self.cartas:
+            print("\nO campo de batalha está vazio!")
+            return
+
+        print("\n" + "="*50)
+        print("🃏 CARTAS NO CAMPO DE BATALHA 🃏")
+        print("="*50)
+        for i, carta in enumerate(self.cartas, 1):
+            print(f"\nCarta {i}:")
+            print(carta)
+
+    def remover_carta(self, indice):
+        try:
+            carta_removida = self.cartas.pop(indice-1)
+            print(f"\n{carta_removida.nome} foi removida do campo de batalha!")
+        except IndexError:
+            print("\nÍndice inválido! Nenhuma carta foi removida.")
+
+
+def menu_principal():
+    campo = CampoBatalha()
+
+    while True:
+        print("\n" + "="*50)
+        print("MENU PRINCIPAL")
+        print("1. Criar nova carta")
+        print("2. Ver cartas no campo")
+        print("3. Remover carta do campo")
+        print("4. Sair")
+
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            nova_carta = criar_carta_interativamente()
+            if nova_carta:
+                campo.adicionar_carta(nova_carta)
+        elif escolha == "2":
+            campo.mostrar_campo()
+        elif escolha == "3":
+            campo.mostrar_campo()
+            if campo.cartas:
+                try:
+                    indice = int(
+                        input("\nDigite o número da carta a ser removida: "))
+                    campo.remover_carta(indice)
+                except ValueError:
+                    print("Por favor, digite um número válido!")
+        elif escolha == "4":
+            print("\nObrigado por usar o Criador de Cartas de Yu-Gi-Oh! Até mais!")
+            break
+        else:
+            print("\nOpção inválida! Por favor, escolha entre 1-4.")
+
+
+if __name__ == "__main__":
+    menu_principal()
