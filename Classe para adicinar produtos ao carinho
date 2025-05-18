@@ -1,0 +1,31 @@
+class Produto:
+    def __init__(self, nome, preco, especificacao):
+        self.nome = nome
+        self.preco = preco
+        self.especificacao = especificacao
+
+class CarrinhoDeCompras:
+    def __init__(self):
+        self.produtos = []
+
+    def adicionar_produto(self, produto):
+        self.produtos.append(produto)
+
+    def calcular_total(self):
+        return sum(produto.preco for produto in self.produtos)
+
+# Como usar corretamente:
+# 1. Primeiro peça os dados ao usuário
+nome_prod = input("Qual o nome do produto? ")
+preco_prod = float(input("Qual o preço do produto? "))
+espec_prod = input("Especifique o produto: ")
+
+# 2. Crie o objeto Produto com os dados coletados
+novo_produto = Produto(nome_prod, preco_prod, espec_prod)
+
+# 3. Adicione ao carrinho
+carrinho = CarrinhoDeCompras()
+carrinho.adicionar_produto(novo_produto)
+
+# 4. Calcule o total
+print(f"Total: R$ {carrinho.calcular_total():.2f}")
