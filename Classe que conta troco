@@ -1,0 +1,28 @@
+class Caixa:
+    def __init__(self):
+        self.valor_produto = 0.0
+        self.valor_recebido = 0.0
+
+    def calcular_troco(self):
+        return self.valor_recebido - self.valor_produto
+
+    def processar_pagamento(self):
+        self.valor_produto = float(input("Qual o valor do produto? R$ "))
+        self.valor_recebido = float(input("Quanto o cliente pagou? R$ "))
+
+        troco = self.calcular_troco()
+
+        if troco >= 0:
+            print(f"Troco a devolver: R$ {troco:.2f}")
+            self.guardar_receber()
+        else:
+            print(f"Falta receber: R$ {-troco:.2f}")
+
+    def guardar_receber(self):
+        print("Valor recebido e registrado no sistema")
+
+
+# Uso
+caixa = Caixa()
+caixa.processar_pagamento()
+10
